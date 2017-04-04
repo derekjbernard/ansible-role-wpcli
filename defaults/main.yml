@@ -1,0 +1,37 @@
+---
+# defaults file for derekjbernard.wp-cli
+
+wp_cli_phar_get_url: https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+wp_cli_bin_path: "/usr/local/bin/{{ wp_cli_bin_filename }}"
+wp_cli_bin_filename: wp
+
+# php-cli command used to run wp_cli_bin_command (vars/main.yml)
+# see http://php.net/manual/en/features.commandline.options.php for more details
+# Many package installs need a higher php memory_limit. 384M works well.
+wp_cli_php_command: "php -d memory_limit=384M"
+
+# list of wp-cli package names and desired install state
+wp_cli_packages: []
+# - { name: "author/wpcli-package-name", state: (present|latest|absent) }
+# - ( name: "iandunn/wp-cli-plugin-active-on-sites", state: latest }
+# - name: "danielbachhuber/wp-cli-stat-command"
+#   state: absent
+
+# Enable file check of wp-cli.phar using defined hash type (md5 or sha512) 
+# see available hash files: https://github.com/wp-cli/builds/tree/gh-pages/phar
+wp_cli_phar_hash_file_type: sha512
+
+# url of hash file. Url of wp-cli.phar hash is 'hash type' appended to wp-cli.phar url.
+wp_cli_phar_hash_type_uri_url: "{{ wp_cli_phar_url + '.' + wp_cli_phar_hash_file_type }}"
+
+# predefine wp-cli.phar get_url checksum. why? prevent upgrade or use custom hash e.g. sha1.
+#wp_cli_phar_get_url_checksum: "sha1:617038739c5c7102a553b6a0d22207d4aeb80b89"
+
+# Download and deploy wp-cli from a central deployment host.
+# This could be a "jumphost" or the localhost control machine.
+wp_cli_delegate_host: localhost
+
+# Option: define download directory on deployment host.
+wp_cli_delegate_host_download_dir: "{{ role_path }}/files/"
+
+wp_cli_delegate_packages_download_dir: "{{ wp_cli_delegate_host_download_dir|default('~') }}/.wp_cli/packages"

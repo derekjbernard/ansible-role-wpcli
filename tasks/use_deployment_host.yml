@@ -1,0 +1,30 @@
+---
+- name: "deployment host -  install.yml tasks"
+  include: install.yml
+  vars:
+    wp_cli_bin_path: "{{ wp_cli_delegate_host_download_dir + 'wp'}}"
+    wp_cli_bin_command: "{{ wp_cli_delegate_host_bin_command }}"
+
+- name: "deployment host -  copy wp-cli to target host"
+  copy:
+    src: "{{ wp_cli_delegate_host_download_dir }}wp"
+    dest: "{{ wp_cli_bin_path }}"
+    force: true
+    mode: 0755
+
+- name: deployment host -  ensure package dir exists
+  file:
+    state: directory
+    recurse: yes
+    path: "{{ wp_cli_delegate_host_download_dir }}/wp-cli/packages/"
+  delegate_to: "{{ wp_cli_delegate_host }}"
+  when: wp_cli_packages|length > 0
+
+- name: "deployment host -  copy packages to target host"
+  synchronize:
+    src: "{{ wp_cli_delegate_host_download_dir }}/wp-cli/packages/"
+    dest: "{{ wp_cli_package_path.stdout }}"
+    recursive: yes
+    checksum: yes
+    archive: no
+  when: wp_cli_package_path.stdout is defined and wp_cli_packages|length > 0

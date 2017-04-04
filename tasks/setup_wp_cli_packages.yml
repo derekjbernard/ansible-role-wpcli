@@ -1,0 +1,33 @@
+---
+# task setup_wp_cli_packages.yml
+
+- name: "{{ user_at_host }} - make list of existing packages"
+  shell: "{{ wp_cli_bin_command }} package list --fields=name --format=json"
+  register: wp_cli_existing_packages_on_dest
+
+- name: "{{ user_at_host }} - Build WP-CLI packages "
+  shell: "{{ wp_cli_bin_command }} package install {{ item.name }}"
+  register: command_result
+  delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+  changed_when: "'Nothing to install or update' not in command_result.stdout"
+  when:
+    - item is defined
+    - item.state != 'absent'
+  with_items: "{{ wp_cli_packages }}"
+  tags:
+    - packages
+
+tasks:
+  - shell: cat /some/path/to/file.json
+    register: result
+
+  - set_fact: myvar="{{ result.stdout | from_json }}"
+
+
+- name: "{{ user_at_host }} - get wp-cli package path"
+  shell: "{{ wp_cli_bin_command }} package path"
+  register: wp_cli_package_path
+  changed_when: false
+  when:
+    - wp_cli_packages|length > 0
+    - delegate_host is defined

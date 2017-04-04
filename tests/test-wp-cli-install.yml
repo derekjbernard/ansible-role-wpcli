@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  vars:
+    wp_cli_bin_path: /Users/djbernar/code/ansible/wp
+    wp_cli_packages:
+      - { name: "iandunn/wp-cli-plugin-active-on-sites", state: latest }
+      - { name: "danielbachhuber/wp-cli-stat-command", state: present }
+  roles:
+  - derekjbernard.wp-cli

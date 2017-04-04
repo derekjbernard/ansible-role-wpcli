@@ -1,0 +1,8 @@
+---
+- include: install_from_delegate_host.yml
+  static: no
+  when: wp_cli_delegate_host is defined
+
+- include: install.yml
+  static: no
+  when: wp_cli_delegate_host is undefined

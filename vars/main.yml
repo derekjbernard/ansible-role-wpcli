@@ -1,0 +1,17 @@
+---
+# vars file for derekjbernard.wp-cli
+user_at_host: {{ lookup('pipe', 'whoami')+ '@' + inventory_hostname }}
+
+# sets WP_CLI_PACKAGES_DIR environment variable:
+# if wp_cli_delegate_host defined, set to wp_cli_packages_download_dir
+# else if WP_CLI_PACKAGES_DIR already exists use it, else use ~/.wp_cli/packages
+wp_cli_packages_dir_env: >-
+  {{ 'WP_CLI_PACKAGES_DIR=' +
+  {wp_cli_delegate_host|default('nomatch'):wp_cli_packages_download_dir}[
+    wp_cli_delegate_host|default('matchno')
+  ]
+  | default('${WP_CLI_PACKAGES_DIR:-~/.wp-cli/packages}') }}
+
+#
+wp_cli_bin_command: "{{ wp_cli_packages_dir_env + ' ' + wp_cli_php_overides|default('php') + ' ' + wp_cli_bin_path }}"
+

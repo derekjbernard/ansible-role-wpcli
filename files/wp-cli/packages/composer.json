@@ -1,0 +1,28 @@
+{
+    "name": "wp-cli/wp-cli",
+    "description": "Installed community packages used by WP-CLI",
+    "version": "1.1.0",
+    "authors": [
+        {
+            "name": "WP-CLI",
+            "email": "noreply@wpcli.org"
+        }
+    ],
+    "homepage": "https://wp-cli.org/package-index/",
+    "require": {
+        "iandunn/wp-cli-plugin-active-on-sites": "dev-master",
+        "danielbachhuber/wp-cli-stat-command": "dev-master"
+    },
+    "require-dev": {},
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "repositories": {
+        "wp-cli": {
+            "type": "composer",
+            "url": "https://wp-cli.org/package-index/"
+        }
+    },
+    "config": {
+        "secure-http": true
+    }
+}

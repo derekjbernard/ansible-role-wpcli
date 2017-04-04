@@ -92,5 +92,3 @@ Anyone submitting a pull request may add themselves to the Author/Contributors l
 
 Changelog
 ---------
-
-v0.0.0 - Alpha in dev branch.

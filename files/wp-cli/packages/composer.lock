@@ -1,0 +1,105 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4be26f3043fa584134aecd6d871c4a86",
+    "packages": [
+        {
+            "name": "danielbachhuber/wp-cli-stat-command",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/danielbachhuber/wp-cli-stat-command.git",
+                "reference": "d308e5b9e21f7604cbf538366adc60bf623e0822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/danielbachhuber/wp-cli-stat-command/zipball/d308e5b9e21f7604cbf538366adc60bf623e0822",
+                "reference": "d308e5b9e21f7604cbf538366adc60bf623e0822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "wp-cli-package",
+            "autoload": {
+                "files": [
+                    "wp-cli-stat-command.php"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel Bachhuber",
+                    "email": "d@danielbachhuber.com",
+                    "homepage": "http://danielbachhuber.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Explore data about your WordPress site.",
+            "homepage": "https://github.com/danielbachhuber/wp-cli-stat-command",
+            "keywords": [
+                "analytics",
+                "wp-cli"
+            ],
+            "support": {
+                "source": "https://github.com/danielbachhuber/wp-cli-stat-command/tree/master",
+                "issues": "https://github.com/danielbachhuber/wp-cli-stat-command/issues"
+            },
+            "time": "2016-10-20 14:08:17"
+        },
+        {
+            "name": "iandunn/wp-cli-plugin-active-on-sites",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iandunn/wp-cli-plugin-active-on-sites.git",
+                "reference": "87f4b0298203649c54cf412a2aeb396c4ca2d677"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iandunn/wp-cli-plugin-active-on-sites/zipball/87f4b0298203649c54cf412a2aeb396c4ca2d677",
+                "reference": "87f4b0298203649c54cf412a2aeb396c4ca2d677",
+                "shasum": ""
+            },
+            "type": "wp-cli-package",
+            "autoload": {
+                "files": [
+                    "wp-cli-plugin-active-on-sites.php"
+                ]
+            },
+            "license": [
+                "GPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Ian Dunn",
+                    "email": "ian@iandunn.name",
+                    "homepage": "https://iandunn.name"
+                }
+            ],
+            "description": "A WP-CLI command to list all sites in a Multisite network that have activated a given plugin",
+            "homepage": "https://github.com/iandunn/wp-cli-plugin-active-on-sites",
+            "support": {
+                "source": "https://github.com/iandunn/wp-cli-plugin-active-on-sites/tree/master",
+                "issues": "https://github.com/iandunn/wp-cli-plugin-active-on-sites/issues"
+            },
+            "time": "2017-01-27 23:57:32"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "iandunn/wp-cli-plugin-active-on-sites": 20,
+        "danielbachhuber/wp-cli-stat-command": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

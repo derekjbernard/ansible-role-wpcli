@@ -1,0 +1,27 @@
+---
+# tasks file for derekjbernard.wp-cli
+- name: get wp-cli.phar hash file
+  uri:
+    url: "{{ wp_cli_phar_hash_type_uri_url }}"
+    return_content: yes
+  delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+  register: wp_cli_phar_hash_file
+  when: wp_cli_phar_hash_file_type is defined
+
+- name: 'construct wp-cli.phar get_url checksum value'
+  set_fact:
+    wp_cli_phar_get_url_checksum: >
+      {{ wp_cli_phar_hash_file_type + ':' +
+      wp_cli_phar_hash_file.content }}
+  delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+  when: wp_cli_phar_hash_file_type is defined
+
+- name: Install WP-CLI
+  get_url:
+    url: "{{ wp_cli_phar_url }}"
+    dest: "{{ wp_cli_bin_path }}"
+    checksum: "{{ wp_cli_phar_get_url_checksum | default(omit) }}"
+    mode: 0755
+  delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+  tags:
+    - packages
