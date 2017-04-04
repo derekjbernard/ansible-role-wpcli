@@ -22,12 +22,12 @@ Role Variables
 
 | Variable             | Default     | Comments (type)                                   |
 | :---                 | :---        | :---                                              |
-| ```wp_cli_phar_url``` | ```https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar``` | Location of the WP-CLI phar to download |
+| ```wp_cli_phar_get_url``` | ```https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar``` | Location of the WP-CLI phar to download |
 | ```wp_cli_bin_path``` | ```/usr/bin/{{ wp_cli_bin_command }}``` | Location to store WP-CLI on remote machine |
 | ```wp_cli_bin_command``` | wp | WP-CLI Coomand on remote machine | 
 | ```wp_cli_packages``` |  | List of WP-CLI Packege for Installing |
 | ```wp_cli_phar_hash_file_type``` |  | hash type (md5 or sha512) to retrieve for get_url checksum verification of wp-cli.phar |
-| ```wp_cli_phar_hash_type_uri_url``` | ```{{ wp_cli_phar_url + '.' + wp_cli_phar_hash_file_type }}``` | hash url for verifing wp-cli.phar |
+| ```wp_cli_phar_hash_type_uri_url``` | ```{{ wp_cli_phar_get_url + '.' + wp_cli_phar_hash_file_type }}``` | hash url for verifing wp-cli.phar |
 | ```wp_cli_phar_get_url_checksum``` |  | use defined checksum value instead of retrieving it. |
 | ```wp_cli_delegate_host``` |  | download wp-cli to specified host and deploy from there |
 | ```wp_cli_delegate_host_download_dir``` |  | specify download dir on deployment host |

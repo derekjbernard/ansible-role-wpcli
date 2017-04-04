@@ -1,5 +1,6 @@
 # testing playbook
 - hosts: localhost
+  connection: local
   gather_facts: no
 
   vars:
@@ -34,18 +35,18 @@
     wp_cli_phar_hash_file_type: sha512
     
     # url of hash file. Url of wp-cli.phar hash is 'hash type' appended to wp-cli.phar url.
-    wp_cli_phar_hash_type_uri_url: "{{ wp_cli_phar_url + '.' + wp_cli_phar_hash_file_type }}"
+    wp_cli_phar_hash_type_uri_url: "{{ wp_cli_phar_get_url + '.' + wp_cli_phar_hash_file_type }}"
     
     # predefine wp-cli.phar get_url checksum. why? prevent upgrade or use custom hash e.g. sha1.
     #wp_cli_phar_get_url_checksum: "sha1:617038739c5c7102a553b6a0d22207d4aeb80b89"
     
     # Download and deploy wp-cli from a central deployment host.
     # This could be a "jumphost" or the localhost control machine.
-    #wp_cli_delegate_host: localhost
-    #wp_cli_delegate_to_host: "{{wp_cli_delegate_host}}"
+    wp_cli_delegate_host: localhost
+    wp_cli_delegate_to_host: "{{wp_cli_delegate_host}}"
     
     # Option: define download directory on deployment host.
-    wp_cli_delegate_host_download_dir: "/Users/djbernar/code/ansible/roles/derekjbernard.wpcli/files/temptest"
+    wp_cli_delegate_host_download_dir: "~/code/ansible-role-wpcli/tests"
     
     wp_cli_delegate_packages_download_dir: "{{ wp_cli_delegate_host_download_dir|default('~') }}/.wp_cli/packages"
 
@@ -82,6 +83,33 @@
     #### END VARS/MAIN ################################################################
 
   tasks:
+    # get_wpcli.yml file for derekjbernard.wp-cli
+    - name: get wp-cli.phar hash file
+      uri:
+        url: "{{ wp_cli_phar_hash_type_uri_url }}"
+        return_content: yes
+      delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+      register: wp_cli_phar_hash_file
+      when: wp_cli_phar_hash_file_type is defined
+    
+    - name: 'construct wp-cli.phar get_url checksum value'
+      set_fact:
+        wp_cli_phar_get_url_checksum: >
+          {{ wp_cli_phar_hash_file_type + ':' +
+          wp_cli_phar_hash_file.content }}
+      delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+      when: wp_cli_phar_hash_file_type is defined
+    
+    - name: Install WP-CLI
+      get_url:
+        url: "{{ wp_cli_phar_get_url }}"
+        dest: "{{ wp_cli_bin_path }}"
+        checksum: "{{ wp_cli_phar_get_url_checksum | default(omit) }}"
+        mode: 0755
+      delegate_to: "{{ wp_cli_delegate_to_host | default(omit) }}"
+      tags:
+        - packages
+  
     - name: "{{ user_at_host }} - get list of existing packages"
       shell: "{{ wp_cli_bin_command + 'package list --fields=name --format=json' }}"
       register: wp_cli_existing_packages_on_dest
@@ -122,7 +150,7 @@
       when:
         - item is defined
         - item.state != 'absent'
-      with_items: "{{ wp_cli_packages }}"
+      with_items: "{{ wp_cli_package_change_list }}"
       tags:
         - packages
 
@@ -130,6 +158,10 @@
       debug: 
         msg: "{{item.name}}"
       with_items: "{{wp_cli_state_installed_packages}}"
+
+    - name: show 'items already installed?'
+      debug: msg="{{wp_cli_existing_packages_on_dest.stdout|from_json|selectattr('name', 'equalto', item)|map(attribute='name')|list|join(" ")}}"
+      with_items: "{{ wp_cli_packages|selectattr('state', 'equalto', 'installed')|map(attribute='name') | list}}"
 
     - name: show 'wp_cli_existing_packages_on_dest.stdout|from_json'
       debug:

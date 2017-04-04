@@ -1,5 +1,5 @@
 ---
-# tasks file for derekjbernard.wp-cli
+# get_wpcli.yml file for derekjbernard.wp-cli
 - name: get wp-cli.phar hash file
   uri:
     url: "{{ wp_cli_phar_hash_type_uri_url }}"
@@ -18,7 +18,7 @@
 
 - name: Install WP-CLI
   get_url:
-    url: "{{ wp_cli_phar_url }}"
+    url: "{{ wp_cli_phar_get_url }}"
     dest: "{{ wp_cli_bin_path }}"
     checksum: "{{ wp_cli_phar_get_url_checksum | default(omit) }}"
     mode: 0755
