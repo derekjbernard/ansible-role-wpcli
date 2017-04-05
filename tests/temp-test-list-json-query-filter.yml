@@ -16,19 +16,19 @@
     
     # list of wp-cli package names and desired install state
     # Setup packages
-    wp_cli_packages:
-      - { name: "danielbachhuber/wp-cli-stat-command", state: installed }
-      - { name: "iandunn/wp-cli-plugin-active-on-sites", state: installed }
-      - { name: "billerickson/wp-cli-plugin-install-missing", state: installed }
-      - { name: "frozzare/wp-cli-lint", state: installed }
-      - { name: "anhskohbo/wp-cli-themecheck", state: installed }
-    # Test package change functionality
     # wp_cli_packages:
     #   - { name: "danielbachhuber/wp-cli-stat-command", state: installed }
-    #   - { name: "iandunn/wp-cli-plugin-active-on-sites", state: latest }
+    #   - { name: "iandunn/wp-cli-plugin-active-on-sites", state: installed }
     #   - { name: "billerickson/wp-cli-plugin-install-missing", state: installed }
-    #   - { name: "frozzare/wp-cli-lint", state: absent }
-    #   - { name: "anhskohbo/wp-cli-themecheck", state: absent }
+    #   - { name: "frozzare/wp-cli-lint", state: installed }
+    #   - { name: "anhskohbo/wp-cli-themecheck", state: installed }
+    # Test package change functionality
+    wp_cli_packages:
+      - { name: "danielbachhuber/wp-cli-stat-command", state: installed }
+      - { name: "iandunn/wp-cli-plugin-active-on-sites", state: latest }
+      - { name: "billerickson/wp-cli-plugin-install-missing", state: installed }
+      - { name: "frozzare/wp-cli-lint", state: absent }
+      - { name: "anhskohbo/wp-cli-themecheck", state: absent }
     
     # Enable file check of wp-cli.phar using defined hash type (md5 or sha512) 
     # see available hash files: https://github.com/wp-cli/builds/tree/gh-pages/phar
@@ -160,7 +160,7 @@
       with_items: "{{wp_cli_state_installed_packages}}"
 
     - name: show 'items already installed?'
-      debug: msg="{{wp_cli_existing_packages_on_dest.stdout|from_json|selectattr('name', 'equalto', item)|map(attribute='name')|list|join(" ")}}"
+      debug: msg="{{wp_cli_existing_packages_on_dest.stdout|from_json|selectattr('name', 'equalto', item)|map(attribute='name')|join(" ")}}"
       with_items: "{{ wp_cli_packages|selectattr('state', 'equalto', 'installed')|map(attribute='name') | list}}"
 
     - name: show 'wp_cli_existing_packages_on_dest.stdout|from_json'
@@ -183,6 +183,17 @@
     - name: uninstall existing items assigned state absent
       debug: msg="{{ wp_cli_bin_command + 'package uninstall ' + wp_cli_existing_packages_on_dest_list|selectattr('name', 'equalto', item)|map(attribute='name') | list | join(" ") }}"
       with_items: "{{ wp_cli_package_change_list|selectattr('state', 'equalto', 'absent')|map(attribute='name') | list}}"
+
+    - name: uninstall existing items assigned state absent
+      debug: msg="{{ wp_cli_bin_command + 'package uninstall ' + wp_cli_existing_packages_on_dest_list|selectattr('name', 'equalto', item.name)|map(attribute='name') | list | join(" ") }}"
+      with_items: "{{ wp_cli_package_change_list|selectattr('state', 'equalto', 'absent')| list}}"
+
+    - name: wpcli packages add remove packages to declared states
+      debug: msg="{{ wp_cli_bin_command + 'package ' + { "absent":"uninstall", "latest":"install", "installed":"install" }[item.state] + ' ' + item.name}}"
+      with_items:
+        - "{{ wp_cli_package_change_list|selectattr('state', 'equalto', 'absent')| list}}"
+        - "{{ wp_cli_package_change_list|selectattr('state', 'equalto', 'latest')| list}}"
+        - "{{ wp_cli_package_change_list|selectattr('state', 'equalto', 'installed')| list}}"
 
     # - name: wp-cli compile state installed packages list
     #   set_fact: wp_cli_state_installed_packages="{{ wp_cli_state_installed_packages|union([ item ]) }}"
